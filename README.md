@@ -12,7 +12,7 @@ Siehe auch die `import` Anweisungen in der Definition der Klasse `WuLearnApi`.
 
 ## Authentifizierung
 
-Entweder über die parameter `--username` und `--password` die Zugangsdaten übermitteln, oder alternativ ein CredentialsFile mit `--credfile` angeben.
+Entweder über die parameter `--username` und `--password` die Zugangsdaten übermitteln, oder alternativ ein Credentials File mit `--credfile` angeben.
 
 Das credfile muss folgendes Format aufweisen.
 
@@ -70,7 +70,7 @@ Liefert alle vorhanden Daten zu Studienplanpunkten, möglichen und durchgeführt
                         "name": "Soziale Kompetenz", 
                         "prof": "Langer H. · Müllauer-Hager B.", 
                         "semester": "WS 2018", 
-                        "status": "Anmeldung nicht m\öglich", 
+                        "status": "Anmeldung nicht möglich", 
                         "waitlist": "14"
                     },
                 }
