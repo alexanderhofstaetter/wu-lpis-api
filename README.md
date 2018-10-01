@@ -1,4 +1,4 @@
-# WU Learn API
+# WU LPIS API
 
 Eine Python API für das Lehrveranstaltungs- und Prüfungsinformationssystem (LPIS) der WU Wien "[LPIS](https://www.wu.ac.at/studierende/tools-services/lpis/)". Die API verwendet *python.mechanize* für das emulieren eiens Webbrowser, zum navigieren und zum Absenden von (Form) Requests
 
