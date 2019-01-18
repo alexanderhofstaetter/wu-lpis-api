@@ -1,10 +1,10 @@
 # WU LPIS API
 
-Eine Python API für das Lehrveranstaltungs- und Prüfungsinformationssystem (LPIS) der WU Wien "[LPIS](https://www.wu.ac.at/studierende/tools-services/lpis/)". Die API verwendet *python.mechanize* für das emulieren eiens Webbrowser, zum navigieren und zum Absenden von (Form) Requests
+Eine Python API für das Lehrveranstaltungs- und Prüfungsinformationssystem (LPIS) der WU Wien "[LPIS](https://www.wu.ac.at/studierende/tools-services/lpis/)". Die API verwendet `python.mechanize` für das emulieren eines Webbrowser, zum Navigieren und Absenden von (Form) Requests
 
 Diese API ist der Kern der [Flips Anwendung](https://flips.hofstaetter.io/). Siehe auch: [alexanderhofstaetter/flips](https://github.com/alexanderhofstaetter/flips)
 
-## Dependencies (u.a.)
+## Dependencies
 
 Siehe auch die `import` Anweisungen in der Definition der Klasse `WuLpisApi`. 
 
