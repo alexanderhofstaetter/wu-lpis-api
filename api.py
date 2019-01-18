@@ -20,6 +20,7 @@ if __name__ == '__main__':
 	parser.add_argument('-s', '--sessiondir', help='Dir where the sessions should be stored')
 	parser.add_argument('-pp', '--planobject', help="Study plan object in which the correspondending course can be found (Studienplanpunkt")
 	parser.add_argument('-lv', '--course', help="Course ID for which the registration should be done")
+	parser.add_argument('-lv2', '--course2', help="Fallback (second) Course ID")
 	args=parser.parse_args()
 
 	username = file_parser(args.credfile)["username"] if args.credfile else args.username

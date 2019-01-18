@@ -200,11 +200,14 @@ class WuLpisApi():
 
 
 	def registration(self):
-		# os.system('sudo ntpdate -u timeserver.wu.ac.at')
-		offset = 1	# seconds before start time when the request should be made
+		# timeserver = "timeserver.wu.ac.at"
+		# print "syncing time with \"%s\"" % timeserver
+		# os.system('sudo ntpdate -u %s' % timeserver)
+		offset = 1.0	# seconds before start time when the request should be made
 		if self.args.planobject and self.args.course:
 			pp = "S" + self.args.planobject
 			lv = self.args.course
+			lv2 = self.args.course2
 		
 		self.data = {}
 		self.browser.select_form('ea_stupl')
@@ -243,10 +246,24 @@ class WuLpisApi():
 		print "final open time end: %s" % datetime.datetime.now()
 		print "registration is possible"
 
-		form = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('.action form')[0]["name"].strip()
-		self.browser.select_form(form)
+
+		cap1 = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('div[class*="capacity_entry"]')[0].text.strip()
+		cap2 = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv2).parent.parent.select('div[class*="capacity_entry"]')[0].text.strip()
+		free1 = int(cap1[:cap1.rindex('/')-1])
+		free2 = int(cap2[:cap2.rindex('/')-1])
+
+		form1 = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('.action form')[0]["name"].strip()
+		form2 = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv2).parent.parent.select('.action form')[0]["name"].strip()
+
 		print "end time: %s" % datetime.datetime.now()
-		print "submitting registration form"
+		print "freie plaetze: lv1: %s, lv2: %s (if defined)" % (free1, free2)
+		if free1 > 0:
+			self.browser.select_form(form1)
+			print "submitting registration form1 (%s)" % form1
+		else:
+			self.browser.select_form(form2)
+			print "submitting registration form2 (%s)" % form2
+
 		r = self.browser.submit()
 
 		soup = BeautifulSoup(r.read(), "html.parser")
@@ -256,6 +273,10 @@ class WuLpisApi():
 			print "Frei: " + lv.select('div[class*="capacity_entry"]')[0].text.strip()
 			if lv.select('td.capacity div[title*="Anzahl Warteliste"]'):
 				print "Warteliste: " + lv.select('td.capacity div[title*="Anzahl Warteliste"] span')[0].text.strip() + " / " + lv.select('td.capacity div[title*="Anzahl Warteliste"] span')[0].text.strip()
+				if free1 > 0:
+					self.browser.select_form(form2)
+					print "submitting registration form (%s)" % form
+					r = self.browser.submit()
 
 		if soup.find('h3'):
 			print soup.find('h3').find('span').text.strip()

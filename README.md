@@ -6,7 +6,7 @@ Diese API ist der Kern der [Flips Anwendung](https://flips.hofstaetter.io/). Sie
 
 ## Dependencies (u.a.)
 
-Siehe auch die `import` Anweisungen in der Definition der Klasse `WuLearnApi`. 
+Siehe auch die `import` Anweisungen in der Definition der Klasse `WuLpisApi`. 
 
 `pip install python-dateutil mechanize beautifulsoup4 argparse lxml`
 
@@ -28,7 +28,7 @@ password=_PASS_
 Folgende Methoden stehen zur Auswahl. Diese können mit dem Parameter `--action` angegeben werden. Alternativ kann auch direkt die Klasse importiert werden und eine neuees Objekt instanziert werden. Die Ergebnisse eines Aufrufs können entweder vom Rückgabewert der Methode, oder aus der Variable data abgefragt werden.
 
 ```
-api = WuLearnApi(username, password)
+api = WuLpisApi(username, password)
 api.infos()
 print json.dumps(api.getResults())
 print json.dumps(api.data)
@@ -84,9 +84,11 @@ Liefert alle vorhanden Daten zu Studienplanpunkten, möglichen und durchgeführt
 ### registration
 Führt automatisch eine Anmeldung zu einer PI/LV durch. Hierbei wird genau 1 Sekunde vor Beginn der Request gestartet um optimale Chance auf einen LV Platz zu sichern.
 
-Dem Aufruf müssen noch die Parametr `-lv` und `-pp` für Lehrveranstaltung und Planpunkt hinzugefügt werden.
+Vor dem Start der Registrierung sollte die lokale Zeit mit dem Zeitserver der WU (`timeserver.wu.ac.at`) synchronisiert werden.
 
-`python api.py -c=creds.txt -a=registration -pp=124216 -lv=1094`
+Dem Aufruf müssen noch die Parametr `-lv` und `-pp` für Lehrveranstaltung und Planpunkt hinzugefügt werden. Mit dem Parameter `-lv2` kann eine alternative LV Nummer angeben werden. Die Anmeldung für diese wird durchgeführt, falls für die 1. LV keine Plätze mehr frei sind, für die 2. LV aber schon. Sind beide voll wird ein Wartelisteneintrag für die 1. LV durchgeführt.
+
+`python api.py -c=creds.txt -a=registration -pp=124216 -lv=1094 -lv2=1097`
 
 ```
 init time: 2018-09-20 14:58:35.912778
