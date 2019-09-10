@@ -217,6 +217,8 @@ class WuLpisApi():
 		url = soup.find('table', {"class" : "b3k-data"}).find('a', id=pp).parent.find('a', href=True)["href"]
 		r = self.browser.open(self.URL_scraped + url)
 
+		# Solange warten bis die aktuelle Zeit kurz vor der Startzeit (Beginn) ist
+		# Schritt 1: Zeiten berechnen und sleep command bis dahin
 		triggertime = 0
 		soup = BeautifulSoup(r.read(), "html.parser")
 		date = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('.action .timestamp span')[0].text.strip()
@@ -226,7 +228,6 @@ class WuLpisApi():
 				print "waiting: %.2f seconds (%.2f minutes)" % ((triggertime - time.time()), (triggertime - time.time()) / 60)
 				print "waiting till: %s (%s)" % (triggertime, time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(triggertime)))
  				time.sleep( triggertime - time.time() )
-
  		print "triggertime: %s" % triggertime
 		print "final open time start: %s" % datetime.datetime.now()
 		
@@ -245,19 +246,23 @@ class WuLpisApi():
 		print "final open time end: %s" % datetime.datetime.now()
 		print "registration is possible"
 
+		# Kapazität und form parsen 
 		capacity = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('div[class*="capacity_entry"]')[0].text.strip()
 		form = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('.action form')[0]["name"].strip()
-
+		
+		# richtige form (anmeldeformular mit button) im browser auswählen
 		self.browser.select_form(form)	
+		
+		# und anschließend absenden
 		r = self.browser.submit()
-		print "submitted registration form (%s)" % form
 
+		print "submitted registration form (%s)" % form
 		print "end time: %s" % datetime.datetime.now()
 		print "freie plaetze: %s" % (int(capacity[:capacity.rindex('/')-1]))
 		
-		# Für Warteliste anmelden wenn anmeldung nicht erfolgreich
 		soup = BeautifulSoup(r.read(), "html.parser")
 		
+		# Für Warteliste anmelden wenn anmeldung nicht erfolgreich
 		if soup.find('div', {"class" : 'b3k_alert_content'}):
 			print soup.find('div', {"class" : 'b3k_alert_content'}).text.strip()
 			if soup.find('h3'):
@@ -267,9 +272,10 @@ class WuLpisApi():
 			if course.select('td.capacity div[title*="Anzahl Warteliste"]'):
 				print "Warteliste: " + course.select('td.capacity div[title*="Anzahl Warteliste"] span')[0].text.strip() + " / " + lv.select('td.capacity div[title*="Anzahl Warteliste"] span')[0].text.strip()
 				self.browser.select_form(form)
-				print "submitting registration form for waiting list (%s)" % form
 				r = self.browser.submit()
 				soup = BeautifulSoup(r.read(), "html.parser")
+				print "submitted registration form for waiting list (%s)" % form
 
+		# Etwaige Meldungen anzeigen 
 		if soup.find('h3'):
 			print soup.find('h3').getText()
