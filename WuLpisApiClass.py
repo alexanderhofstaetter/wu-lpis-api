@@ -239,45 +239,37 @@ class WuLpisApi():
 			if soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('div.box.possible'):
 				break
 			else:
-				print "parsing done %s" % datetime.datetime.now()
-			print "registration is not (yet) possibe, waiting ..."
-			print "reloading page and waiting for form to be submittable"
+				print "registration is not (yet) possibe, waiting ..."
+				print "reloading page and waiting for form to be submittable"
 
 		print "final open time end: %s" % datetime.datetime.now()
 		print "registration is possible"
 
+		capacity = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('div[class*="capacity_entry"]')[0].text.strip()
+		form = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('.action form')[0]["name"].strip()
 
-		cap1 = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('div[class*="capacity_entry"]')[0].text.strip()
-		cap2 = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv2).parent.parent.select('div[class*="capacity_entry"]')[0].text.strip()
-		free1 = int(cap1[:cap1.rindex('/')-1])
-		free2 = int(cap2[:cap2.rindex('/')-1])
-
-		form1 = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent.select('.action form')[0]["name"].strip()
-		form2 = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv2).parent.parent.select('.action form')[0]["name"].strip()
+		self.browser.select_form(form)	
+		r = self.browser.submit()
+		print "submitted registration form (%s)" % form
 
 		print "end time: %s" % datetime.datetime.now()
-		print "freie plaetze: lv1: %s, lv2: %s (if defined)" % (free1, free2)
-		if free1 > 0:
-			self.browser.select_form(form1)
-			print "submitting registration form1 (%s)" % form1
-		else:
-			self.browser.select_form(form2)
-			print "submitting registration form2 (%s)" % form2
-
-		r = self.browser.submit()
-
+		print "freie plaetze: %s" % (int(capacity[:capacity.rindex('/')-1]))
+		
+		# Für Warteliste anmelden wenn anmeldung nicht erfolgreich
 		soup = BeautifulSoup(r.read(), "html.parser")
+		
 		if soup.find('div', {"class" : 'b3k_alert_content'}):
 			print soup.find('div', {"class" : 'b3k_alert_content'}).text.strip()
-			lv = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent
-			print "Frei: " + lv.select('div[class*="capacity_entry"]')[0].text.strip()
-			if lv.select('td.capacity div[title*="Anzahl Warteliste"]'):
-				print "Warteliste: " + lv.select('td.capacity div[title*="Anzahl Warteliste"] span')[0].text.strip() + " / " + lv.select('td.capacity div[title*="Anzahl Warteliste"] span')[0].text.strip()
-				if free1 > 0:
-					self.browser.select_form(form2)
-					print "submitting registration form (%s)" % form
-					r = self.browser.submit()
+			if soup.find('h3'):
+				print soup.find('h3').text.strip()
+			course = soup.find('table', {"class" : "b3k-data"}).find('a', text=lv).parent.parent
+			print "Frei: " + course.select('div[class*="capacity_entry"]')[0].text.strip()
+			if course.select('td.capacity div[title*="Anzahl Warteliste"]'):
+				print "Warteliste: " + course.select('td.capacity div[title*="Anzahl Warteliste"] span')[0].text.strip() + " / " + lv.select('td.capacity div[title*="Anzahl Warteliste"] span')[0].text.strip()
+				self.browser.select_form(form)
+				print "submitting registration form for waiting list (%s)" % form
+				r = self.browser.submit()
+				soup = BeautifulSoup(r.read(), "html.parser")
 
 		if soup.find('h3'):
-			print soup.find('h3').find('span').text.strip()
-
+			print soup.find('h3').getText()
