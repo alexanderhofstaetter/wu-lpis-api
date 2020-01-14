@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import requests, dill, sys, base64, datetime, re, os, time, hashlib, pickle, unicodedata, ssl
+import requests, dill, sys, base64, datetime, re, os, time, hashlib, pickle, unicodedata
 from lxml import html
 from datetime import timedelta
 from dateutil import parser
@@ -20,7 +20,6 @@ class WuLpisApi():
 		self.args = args
 		self.data = {}
 		self.status = {}
-		ssl._create_default_https_context = ssl._create_unverified_context
 		self.browser = mechanize.Browser()
 
 		if sessiondir:
