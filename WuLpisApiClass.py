@@ -206,6 +206,14 @@ class WuLpisApi():
 
 
 	def registration(self):
+
+		self.browser.select_form('ea_stupl')
+		
+		form = self.browser.form
+		# Select first element in Select Options Dropdown
+		item = form.find_control("ASPP").get(None ,None, None, 0)
+		item.selected = True
+		
 		# timeserver = "timeserver.wu.ac.at"
 		# print "syncing time with \"%s\"" % timeserver
 		# os.system('sudo ntpdate -u %s' % timeserver)
